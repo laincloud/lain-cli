@@ -1,0 +1,21 @@
+# lain cli
+
+- lain config save dev domain ${LAIN_DEV} 全局设置开发集群的 domain
+- lain config save prod domain ${LAIN_PROD} 全局设置生产集群的 domain
+- lain config show 展示全局开发和生产集群的相关配置
+- lain prepare 构建 appname:prepare
+- lain build 构建 appname:prepare appname:build appname:test appname:release appname:meta 系列镜像
+- lain build 可以复用之前的 appname:prepare
+- lain clear [--without prepare] 清理除了 without 列表之外的当前 app 的所有容器和镜像
+- lain test 运行预定义好的测试
+- [TODO] lain run [proc] 启动本地服务
+- lain meta 展示当前的 meta version
+- lain tag dev 打上给 dev 集群的 tag
+- lain tag prod 打上给 prod 集群的 tag
+- lain push dev 推送 dev 集群镜像
+- lain push prod 推送 prod 集群镜像
+- lain deploy dev [branch|SHA1|tag] 在 dev 集群部署
+- lain login 集群开启了sso登陆后，则需登录才能deploy
+- lain logout 集群开启了sso登陆后，注销当前帐户
+- lain enter ${phase} ${proc} ${instance_no} 用户登录后，ssh进入到该容器
+- lain ci {create,build,status}  ([-v --vcs]只用在create,必填)) [-b --branch]   在jenkins自动创建,构建,查看最近一次构建状态 vcs为git地址 branch为git分支默认master
