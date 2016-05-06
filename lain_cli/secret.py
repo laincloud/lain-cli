@@ -29,7 +29,7 @@ class SecretCommands(TwoLevelCommandBase):
 
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
-    @arg('procname', help="proc fullname, eg: app.protype.proname ")
+    @arg('procname', help="proc name of the app")
     def show(cls, phase, procname, path=None):
         """
         show secret file of special procname in different phase
@@ -41,9 +41,14 @@ class SecretCommands(TwoLevelCommandBase):
         yml = lain_yaml(ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
-        
+        proc = yml.procs.get(procname, None)
+        if proc is None:
+            error('proc {} does not exist'.format(procname))
+            exit(1)
+
+        podgroup_name = "{}.{}.{}".format(yml.appname, proc.type.name, proc.name)       
         lvault_url = "http://lvault.%s/v2/secrets?app=%s&proc=%s" % (
-            get_domain(phase), yml.appname, procname)
+            get_domain(phase), yml.appname, podgroup_name)
         if path:
             lvault_url += "&path=%s" % path
         
@@ -56,7 +61,7 @@ class SecretCommands(TwoLevelCommandBase):
 
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
-    @arg('procname', help="proc fullname, eg: app.protype.proname ")
+    @arg('procname', help="proc name of the app")
     @arg('path', help='absolute path of config file, eg : /lain/app/config')
     @arg('content', help="content of the secret file")
     def add(cls, phase, procname, path, content):
@@ -73,8 +78,9 @@ class SecretCommands(TwoLevelCommandBase):
             error('proc {} does not exist'.format(procname))
             exit(1)
 
+        podgroup_name = "{}.{}.{}".format(yml.appname, proc.type.name, proc.name)
         lvault_url = "http://lvault.%s/v2/secrets?app=%s&proc=%s&path=%s" % (
-            get_domain(phase), yml.appname, procname, path)
+            get_domain(phase), yml.appname, podgroup_name, path)
         payload = {"content": content}
 
         add_response = requests.put(lvault_url, headers=auth_header, json=payload)
@@ -85,7 +91,7 @@ class SecretCommands(TwoLevelCommandBase):
 
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
-    @arg('procname', help="proc fullname, eg: app.protype.proname ")
+    @arg('procname', help="proc name of the app")
     @arg('path', help='absolute path of config file, eg : /lain/app/config')
     def delete(cls, phase, procname, path):
         """
@@ -96,9 +102,14 @@ class SecretCommands(TwoLevelCommandBase):
         yml = lain_yaml(ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
-        
+        proc = yml.procs.get(procname, None)
+        if proc is None:
+            error('proc {} does not exist'.format(procname))
+            exit(1)
+
+        podgroup_name = "{}.{}.{}".format(yml.appname, proc.type.name, proc.name)
         lvault_url = "http://lvault.%s/v2/secrets?app=%s&proc=%s&path=%s" % (
-            get_domain(phase), yml.appname, procname, path)
+            get_domain(phase), yml.appname, podgroup_name, path)
 
         delete_response = requests.delete(lvault_url, headers=auth_header)
         if delete_response.status_code < 300:
