@@ -102,7 +102,7 @@ def check_deploy_result(operation, console, appname, auth_header):
         sleep(0.5)
         result = app_status(console, appname, auth_header)
         if result:
-            stdout.write("\r%s... Done. " % operation)
+            stdout.write("\r%s... %s. " % (operation, result))
             stdout.flush()
             stdout.write("\n")
             return result
@@ -113,8 +113,10 @@ def app_status(console, appname, auth_header):
     app_r = requests.get(app_url, headers=auth_header)
     if app_r.status_code == 200:
         app_status = app_r.json()["app"]
-        if get_app_state(app_status) == 'healthy' or app_status['deployerror']:
-            return app_status
+        if get_app_state(app_status) == 'healthy':
+            return "Done"
+        elif app_status['deployerror']:
+            return app_status['deployerror']
         else:
             return None
 
