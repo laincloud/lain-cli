@@ -18,7 +18,6 @@ def validate_only_warning():
         error('#  check the schema with     #')
         error('#    lain validate           #')
         error('##############################')
-        exit(1)
 
 
 def validate():
