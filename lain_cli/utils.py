@@ -217,6 +217,7 @@ def render_proc_status(proc_status, output='pretty'):
 
     table = [
         ['procname', proc_status.get('procname')],
+        ['proctype', proc_status.get('proctype')],
         ['state', get_proc_state(proc_status)],
         ['memory', proc_status.get('memory')],
         ['cpu', proc_status.get('cpu')],
@@ -273,16 +274,19 @@ def render_portal_status(portal_status, output='pretty'):
 
 def render_service_portal_status(service_status, output='pretty'):
     portals = service_status.get('service').get('portals')
-    for portal in portals:
-        table = [
-            ['servicename', service_status.get('servicename')],
-            ['procname', portal.get('procname')],
-            ['memory', portal.get('memory')],
-            ['cpu', portal.get('cpu')],
-            ['image', portal.get('image')],
-            ['portal_numbers', len(portal.get('pods'))]
-        ]
-        _render_protal(table, portal, output)
+    if portals:
+        for portal in portals:
+            table = [
+                ['servicename', service_status.get('servicename')],
+                ['procname', portal.get('procname')],
+                ['memory', portal.get('memory')],
+                ['cpu', portal.get('cpu')],
+                ['image', portal.get('image')],
+                ['portal_numbers', len(portal.get('pods'))]
+            ]
+            _render_protal(table, portal, output)
+    else:
+        print("Not found, service may not been deployed.")
 
 
 def _render_protal(table, portal_status, output='pretty'):
