@@ -31,8 +31,8 @@ def print_welecome():
 
 
 def print_workflows():
-    info('There are two recommended workflows :')
-    info('  1. lain reposit => lain prepare => lain build => lain tag => lain push => lain deploy')
+    info('Below is the recommended workflows :')
+    info('  lain reposit => lain prepare => lain build => lain tag => lain push => lain deploy')
 
 
 def render_repo(repo):
