@@ -50,11 +50,11 @@ class SSOAccess(object):
     @classmethod
     def new(cls, phase, cid=None, secret=None, redirect_uri=None):
         if cid is None:
-            cid = 1
+            cid = 3
         if secret is None:
-            secret = 'admin'
+            secret = 'lain-cli_admin'
         if redirect_uri is None:
-            redirect_uri = 'https://sso.lain.local'
+            redirect_uri = 'https://example.com'
 
         return SSOAccess(cid, secret, redirect_uri, phase)
 
