@@ -63,11 +63,25 @@ class SecretCommands(TwoLevelCommandBase):
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('procname', help="proc name of the app")
     @arg('path', help='absolute path of config file, eg : /lain/app/config')
-    @arg('content', help="content of the secret file")
-    def add(cls, phase, procname, path, content):
+    def add(cls, phase, procname, path, content=None, file=None):
         """
         add secret file for different phase
+
+        content: content of the secret file
+        file: read secret content from a specify file
         """
+
+        if file is None and content is None:
+            error("need specify the content use -c or -f parameter")
+            exit(1)
+
+        if file is not None:
+            try:
+                f = open(file)
+                content = f.read()
+            except Exception, e:
+                error("error read file %s : %s" % (file, str(e)))
+                exit(1)
 
         check_phase(phase)
         yml = lain_yaml(ignore_prepare=True)
