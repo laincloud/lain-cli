@@ -25,6 +25,10 @@ def refresh(phase):
 def login(phase, cid=None, secret=None, redirect_uri=None):
     """
     Login specific phase, need open auth first
+
+    cid: Client id get from the sso system, default: 3
+    secret: Client secret get from the sso system, default: lain-cli_admin
+    redirect_uri: Redirect uri get from the sso system, default: https://example.com/
     """
 
     check_phase(phase)
