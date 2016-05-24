@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pprint
+import json
 from argh.decorators import arg
 
 from lain_sdk.yaml.conf import user_config
@@ -31,9 +31,9 @@ class ConfigCommands(TwoLevelCommandBase):
             if not isinstance(v, dict):
                 continue
             for key in hide_keys:
-                if v.has_key(SSO_TOKEN_KEY):
-                    v.pop(SSO_TOKEN_KEY)
-        pprint.pprint(configs)
+                if v.has_key(key):
+                    v.pop(key)
+        print json.dumps(configs, sort_keys=True, indent=4)
 
     @classmethod
     @arg('prop', help="property for the special phase, e.g: domain, sso_url")
