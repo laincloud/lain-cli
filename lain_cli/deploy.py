@@ -147,6 +147,7 @@ def deploy_proc(proc, appname, console, auth_header, output):
 def print_available_version(version, version_list):
     if not version_list:
         error("No available versions, please push first.")
+        return
     if version:
         error("Version %s not exist." % version)
     info("Below are the available versions: ")
