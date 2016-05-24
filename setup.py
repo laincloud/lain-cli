@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 from lain_cli import __version__
 
-ENTRY_POINTS="""
+ENTRY_POINTS = """
 [console_scripts]
 lain = lain_cli.lain:main
 """
@@ -20,8 +20,9 @@ requirements = [
     'paramiko==1.15.2',
     'gevent==1.0.2',
     'requests==2.6.0',
-    'wssh==0.2.1',
     'tabulate==0.7.5',
+    'protobuf==3.0.0b3',
+    'entryclient==2.0.0',
 ]
 
 setup(
@@ -31,5 +32,5 @@ setup(
     include_package_data=True,
     entry_points=ENTRY_POINTS,
     install_requires=requirements,
-    dependency_links=['https://github.com/ericpai/wssh/archive/master.zip#egg=wssh-0.2.1'],
+    dependency_links=['https://github.com/laincloud/entry/archive/master.zip#egg=entryclient-2.0.0'],
 )
