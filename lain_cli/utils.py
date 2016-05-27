@@ -147,7 +147,9 @@ def reposit_app(phase, appname, console, auth_header):
         exit(1)
 
 
-def get_proc_state(proc):
+def get_proc_state(proc, apptype="app"):
+    if apptype == "resource":
+        return "healthy"
     if len(proc["pods"]) == 0:
         return "unhealthy"
     for pod in proc["pods"]:
@@ -157,17 +159,26 @@ def get_proc_state(proc):
 
 
 def get_app_state(app):
-    if app["apptype"] == "resource":
-        return "healthy"
-    if len(app["procs"]) == 0:
+    if not app or app["deployerror"] or len(app["procs"]) == 0:
         return "unhealthy"
     for proc in app["procs"]:
-        if get_proc_state(proc) == "unhealthy":
+        if get_proc_state(proc, app["apptype"]) == "unhealthy":
             return "unhealthy"
+    if app.get("useservices"):
+        for service in app.get("useservices"):
+            if get_app_state(service["service"]) != "healthy":
+                return "missing service"
+    if app.get("useresources"):
+        for resource in app.get("useresources"):
+            if get_app_state(resource["resourceinstance"]) != "healthy":
+                return "missing resource"
     return "healthy"
 
 
 def render_app_status(app_status, output='pretty'):
+    if not app_status:
+        print("\tNot found, may not exist or has been undeployed.")
+        return
 
     table = [
         ['appname', app_status.get('appname')],
@@ -190,7 +201,7 @@ def render_app_status(app_status, output='pretty'):
     if app_status.get('procs'):
         info('Proc list:')
         for proc_status in app_status["procs"]:
-            render_proc_status(proc_status, output=output)
+            render_proc_status(proc_status, app_status.get('apptype'), output=output)
 
     if app_status.get('portals'):
         info('Portal list:')
@@ -213,12 +224,12 @@ def render_app_status(app_status, output='pretty'):
             render_app_status(instance, output=output)
 
 
-def render_proc_status(proc_status, output='pretty'):
+def render_proc_status(proc_status, apptype, output='pretty'):
 
     table = [
         ['procname', proc_status.get('procname')],
         ['proctype', proc_status.get('proctype')],
-        ['state', get_proc_state(proc_status)],
+        ['state', get_proc_state(proc_status, apptype)],
         ['memory', proc_status.get('memory')],
         ['cpu', proc_status.get('cpu')],
         ['image', proc_status.get('image')],
@@ -286,7 +297,7 @@ def render_service_portal_status(service_status, output='pretty'):
             ]
             _render_protal(table, portal, output)
     else:
-        print("Not found, service may not been deployed.")
+        print("\tNot found, service may not been deployed.")
 
 
 def _render_protal(table, portal_status, output='pretty'):

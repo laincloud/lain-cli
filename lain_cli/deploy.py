@@ -113,7 +113,7 @@ def app_status(console, appname, auth_header):
     app_r = requests.get(app_url, headers=auth_header)
     if app_r.status_code == 200:
         app_status = app_r.json()["app"]
-        if get_app_state(app_status) == 'healthy':
+        if get_app_state(app_status) != 'unhealthy':
             return "Done"
         elif app_status['deployerror']:
             return app_status['deployerror']
