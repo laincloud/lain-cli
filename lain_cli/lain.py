@@ -44,13 +44,10 @@ logging.getLogger("docker").setLevel(logging.WARNING)
 
 
 one_level_commands = [
-    attach, dashboard, reposit, prepare, build, tag,
-    push, deploy, ps, validate, appversion,
-    prepare_update, rmi, scale,
-    check, meta, undeploy, enter,
-    login, logout, refresh,
-    test, run, debug, stop, rm, clear,
-    update, version,
+    appversion, attach, build, check, clear, dashboard, debug,
+    deploy, enter, login, logout, meta, prepare, prepare_update,
+    ps, push, refresh, reposit, rm, rmi, run,
+    scale, stop, tag, test, undeploy, update, validate, version
 ]
 
 two_level_commands = [
