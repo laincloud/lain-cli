@@ -9,21 +9,23 @@ import os
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
-def enter(phase, proc_name, instance_no):
+@arg('-t', '--target', help='The target appname to enter. If it\'s not set, it will be the appname of the working dir')
+def enter(phase, proc_name, instance_no, target=None):
     """
     enter the container of specific proc
     """
 
     check_phase(phase)
     yml = lain_yaml(ignore_prepare=True)
-    authorize_and_check(phase, yml.appname)
+    appname = target if target else yml.appname
+    authorize_and_check(phase, appname)
     domain = get_domain(phase)
     access_token = SSOAccess.get_token(phase)
 
     term_type = os.environ.get("TERM", "xterm")
     endpoint = "wss://entry.%s/enter" % domain
     header_data = ["access-token: %s" % access_token,
-                   "app-name: %s" % yml.appname,
+                   "app-name: %s" % appname,
                    "proc-name: %s" % proc_name,
                    "instance-no: %s" % instance_no,
                    "term-type: %s" % term_type]
