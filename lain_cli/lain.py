@@ -3,6 +3,7 @@
 import logging
 import argh
 
+from lain_cli.attach import attach
 from lain_cli.dashboard import dashboard
 from lain_cli.reposit import reposit
 from lain_cli.prepare import prepare
@@ -43,7 +44,7 @@ logging.getLogger("docker").setLevel(logging.WARNING)
 
 
 one_level_commands = [
-    dashboard, reposit, prepare, build, tag,
+    attach, dashboard, reposit, prepare, build, tag,
     push, deploy, ps, validate, appversion,
     prepare_update, rmi, scale,
     check, meta, undeploy, enter,
