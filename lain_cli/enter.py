@@ -12,7 +12,7 @@ import os
 @arg('-t', '--target', help='The target appname to enter. If it\'s not set, it will be the appname of the working dir')
 def enter(phase, proc_name, instance_no, target=None):
     """
-    enter the container of specific proc
+    Enter the container of specific proc
     """
 
     check_phase(phase)

@@ -10,7 +10,7 @@ from lain_cli.utils import check_phase, lain_yaml, get_domain
 @arg('-t', '--target', help='The target appname to attach, if not set, will be the appname of the working dir')
 def attach(phase, proc_name, instance_no, target=None):
     """
-    enter the container of specific proc
+    Attach the stdout/stderr of the container
     """
 
     check_phase(phase)
