@@ -150,27 +150,27 @@ def reposit_app(phase, appname, console, auth_header):
 def get_proc_state(proc, apptype="app"):
     if apptype == "resource":
         return "healthy"
-    if len(proc["pods"]) == 0:
+    if len(proc.get("pods")) == 0:
         return "unhealthy"
-    for pod in proc["pods"]:
-        if pod["status"] != "True":
+    for pod in proc.get("pods"):
+        if pod.get("status") != "True":
             return "unhealthy"
     return "healthy"
 
 
 def get_app_state(app):
-    if not app or app["deployerror"] or len(app["procs"]) == 0:
+    if not app or app.get("deployerror") or len(app.get("procs")) == 0:
         return "unhealthy"
-    for proc in app["procs"]:
-        if get_proc_state(proc, app["apptype"]) == "unhealthy":
+    for proc in app.get("procs"):
+        if get_proc_state(proc, app.get("apptype")) == "unhealthy":
             return "unhealthy"
     if app.get("useservices"):
         for service in app.get("useservices"):
-            if get_app_state(service["service"]) != "healthy":
+            if get_app_state(service.get("service")) != "healthy":
                 return "missing service"
     if app.get("useresources"):
         for resource in app.get("useresources"):
-            if get_app_state(resource["resourceinstance"]) != "healthy":
+            if get_app_state(resource.get("resourceinstance")) != "healthy":
                 return "missing resource"
     return "healthy"
 
@@ -200,27 +200,27 @@ def render_app_status(app_status, output='pretty'):
 
     if app_status.get('procs'):
         info('Proc list:')
-        for proc_status in app_status["procs"]:
+        for proc_status in app_status.get("procs"):
             render_proc_status(proc_status, app_status.get('apptype'), output=output)
 
     if app_status.get('portals'):
         info('Portal list:')
-        for portal_status in app_status["portals"]:
+        for portal_status in app_status.get("portals"):
             render_portal_status(portal_status, output=output)
 
     if app_status.get('useservices'):
         info('Service Portal list:')
-        for use_service in app_status["useservices"]:
+        for use_service in app_status.get("useservices"):
             render_service_portal_status(use_service, output=output)
 
     if app_status.get('useresources'):
         info('Use Resources list:')
-        for use_resource in app_status["useresources"]:
-            render_app_status(use_resource["resourceinstance"], output=output)
+        for use_resource in app_status.get("useresources"):
+            render_app_status(use_resource.get("resourceinstance"), output=output)
 
     if app_status.get('resourceinstances'):
         info('Resource Instances list:')
-        for instance in app_status["resourceinstances"]:
+        for instance in app_status.get("resourceinstances"):
             render_app_status(instance, output=output)
 
 
@@ -245,8 +245,8 @@ def render_proc_status(proc_status, apptype, output='pretty'):
         print(json.dumps(proc_status, indent=2))
         return
 
-    no_of_procs = len(proc_status['pods'])
-    for idx, pod_status in enumerate(proc_status["pods"], start=1):
+    no_of_procs = len(proc_status.get('pods'))
+    for idx, pod_status in enumerate(proc_status.get("pods"), start=1):
         if idx != no_of_procs:
             render_pod_status(pod_status)
         else:
@@ -310,15 +310,15 @@ def _render_protal(table, portal_status, output='pretty'):
         print(json.dumps(portal_status, indent=2))
         return
 
-    no_of_procs = len(portal_status['pods'])
-    for idx, pod_status in enumerate(portal_status["pods"], start=1):
+    no_of_procs = len(portal_status.get('pods'))
+    for idx, pod_status in enumerate(portal_status.get('pods'), start=1):
         if idx != no_of_procs:
             render_pod_status(pod_status)
         else:
             render_pod_status(pod_status, last_one=True)
 
 
-def is_resource(appname):
+def is_resource_instance(appname):
     if appname.find('.') == -1:
         return False
     return True
