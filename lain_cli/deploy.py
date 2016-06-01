@@ -8,7 +8,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, info
 from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
-from lain_cli.utils import check_phase, get_domain, lain_yaml, is_resource
+from lain_cli.utils import check_phase, get_domain, lain_yaml, is_resource_instance
 from lain_cli.utils import reposit_app, get_version_lists, get_app_state
 from lain_cli.utils import render_app_status, render_proc_status
 
@@ -35,7 +35,7 @@ def deploy(phase, version=None, target=None, proc=None, output='pretty'):
     if proc:
         deploy_proc(proc, appname, console, auth_header, output)
     else:
-        if not is_resource(appname):
+        if not is_resource_instance(appname):
             reposit_app(phase, appname, console, auth_header)
         deploy_app(phase, appname, console, auth_header, version, output)
 
@@ -51,7 +51,7 @@ def deploy_app(phase, appname, console, auth_header, version, output):
     if app_r.status_code == 200:
         operation = "upgrading"
         deploy_params = None
-        if not is_resource(appname):
+        if not is_resource_instance(appname):
             former_version = app_r.json()["app"]["metaversion"]
             exist, valid_version = check_meta_version(phase, appname, deploy_version)
             if not exist:
