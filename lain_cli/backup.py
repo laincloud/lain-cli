@@ -154,7 +154,7 @@ class BackupCommands(TwoLevelCommandBase):
         """
         check_phase(phase[0])
         appname = lain_yaml_data()['appname']
-        route = "api/v1/cron/once/app/%s/id/%s" % (appname, id[0])
+        route = "api/v2/app/%s/cron/jobs/%s/actions/run" % (appname, id[0])
         data = cls._request('POST', phase[0], route, None)
         if data:
             print data
