@@ -142,6 +142,7 @@ def render_scale_result(scale_result, output):
         msg = result.pop('msg', '')
         if msg:
             print msg.decode('string_escape')
+        info("proc status: ")
         render_proc_status(result.get('proc'), get_apptype(), output=output)
-    except Exception as e:
+    except Exception:
         pprint.pprint(scale_result.content)
