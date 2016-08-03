@@ -6,7 +6,7 @@ import pprint
 from argh.decorators import arg
 
 from lain_sdk.util import error, warn, info
-from lain_cli.utils import check_phase, lain_yaml, get_domain, render_proc_status
+from lain_cli.utils import check_phase, lain_yaml, get_domain, render_proc_status, get_apptype
 from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
 
 
@@ -18,7 +18,7 @@ def scale(phase, proc, target=None, cpu=None, memory=None, numinstances=None, ou
     """
     Scale proc with cpu/memory/num_instances
     """
-    
+
     check_phase(phase)
     yml = lain_yaml(ignore_prepare=True)
     appname = target if target else yml.appname
@@ -143,6 +143,6 @@ def render_scale_result(scale_result, output):
         if msg:
             print msg.decode('string_escape')
         info("proc status: ")
-        render_proc_status(result.get('proc'), output=output)
+        render_proc_status(result.get('proc'), get_apptype(), output=output)
     except Exception:
         pprint.pprint(scale_result.content)
