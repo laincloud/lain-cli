@@ -41,7 +41,6 @@ from lain_cli.maintainer import MaintainerCommands
 
 from lain_cli.utils import exit_gracefully
 
-
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("docker").setLevel(logging.WARNING)
 
