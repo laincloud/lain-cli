@@ -322,3 +322,8 @@ def is_resource_instance(appname):
     if appname.find('.') == -1:
         return False
     return True
+
+
+def exit_gracefully(signal, frame):
+    warn("You pressed Ctrl + C, and I will exit...")
+    sys.exit(0)
