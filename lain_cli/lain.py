@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import argh
+import signal
 
 from lain_cli.attach import attach
 from lain_cli.dashboard import dashboard
@@ -38,6 +39,7 @@ from lain_cli.secret import SecretCommands
 from lain_cli.backup import BackupCommands
 from lain_cli.maintainer import MaintainerCommands
 
+from lain_cli.utils import exit_gracefully
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("docker").setLevel(logging.WARNING)
@@ -57,6 +59,7 @@ two_level_commands = [
 
 
 def main():
+    signal.signal(signal.SIGINT, exit_gracefully)
     parser = argh.ArghParser()
     parser.add_commands(one_level_commands)
     for command in two_level_commands:
