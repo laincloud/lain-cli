@@ -326,4 +326,4 @@ def is_resource_instance(appname):
 
 def exit_gracefully(signal, frame):
     warn("You pressed Ctrl + C, and I will exit...")
-    sys.exit(0)
+    sys.exit(130)
