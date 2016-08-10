@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from argh.decorators import arg
 
 from lain_sdk.util import error, info
@@ -27,6 +28,6 @@ def push(phase):
     release_code = docker.push(phase_release_tag)
     if meta_code or release_code:
         error("Error lain push.")
+        sys.exit(1)
     else:
         info("Done lain push.")
-    
