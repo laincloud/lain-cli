@@ -8,7 +8,6 @@ from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
 from lain_cli.utils import TwoLevelCommandBase, check_phase
 from lain_cli.utils import lain_yaml, get_domain
 
-
 class SecretCommands(TwoLevelCommandBase):
     '''
     allow add secret files for app, lain will add the secret file into 
@@ -55,7 +54,7 @@ class SecretCommands(TwoLevelCommandBase):
         show_response = requests.get(lvault_url, headers=auth_header)
         if show_response.status_code < 300:
             info("secret file detail:")
-            print(json.dumps(show_response.json(), indent=2))
+            print(json.dumps(show_response.json(), encoding="utf-8", ensure_ascii=False, indent=2))
         else:
             error("shit happened : %s" % show_response.text)
 
