@@ -9,7 +9,7 @@ from lain_cli.utils import get_version_lists, lain_yaml, check_phase
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
 def appversion(phase):
     """
-    Show available app version
+    Show available app versions in remote registry of lain
     """
 
     check_phase(phase)

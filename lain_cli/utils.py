@@ -17,7 +17,7 @@ from tabulate import tabulate
 
 LAIN_YAML_PATH = './lain.yaml'
 
-VALID_TAG_PATERN = re.compile(r"^(meta|release)-(?P<meta_version>\S+-\S+)$")
+VALID_TAG_PATERN = re.compile(r"^(meta)-(?P<meta_version>\S+-\S+)$")
 
 DOMAIN_KEY = user_config.domain_key
 PHASE_CHOICES = user_config.get_available_phases()
