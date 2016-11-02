@@ -10,7 +10,7 @@ from lain_cli.validate import validate_only_warning
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
 def reposit(phase):
     """
-    Reposit app in console
+    Initialize a repository in lain
     """
 
     check_phase(phase)
