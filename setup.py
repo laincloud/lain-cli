@@ -22,7 +22,7 @@ requirements = [
     'requests==2.6.0',
     'tabulate==0.7.5',
     'protobuf==3.0.0b3',
-    'entryclient==2.1.0',
+    'entryclient==2.2.0',
 ]
 
 setup(
@@ -32,5 +32,5 @@ setup(
     include_package_data=True,
     entry_points=ENTRY_POINTS,
     install_requires=requirements,
-    dependency_links=['https://github.com/laincloud/entry/archive/2.1.0.zip#egg=entryclient-2.1.0'],
+    dependency_links=['https://github.com/laincloud/entry/archive/2.2.0.zip#egg=entryclient-2.2.0'],
 )
