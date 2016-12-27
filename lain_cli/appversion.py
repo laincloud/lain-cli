@@ -3,7 +3,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import warn, info
 from lain_cli.auth import authorize_and_check
-from lain_cli.utils import get_version_lists, lain_yaml, check_phase
+from lain_cli.utils import get_version_lists, lain_yaml, check_phase, get_phase_stage
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -13,7 +13,8 @@ def appversion(phase):
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     authorize_and_check(phase, yml.appname)
 
     version_list = get_version_lists(phase, yml.appname)

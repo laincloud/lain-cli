@@ -3,7 +3,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import info
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import check_phase, lain_yaml, reposit_app, get_domain
+from lain_cli.utils import check_phase, lain_yaml, reposit_app, get_domain, get_phase_stage
 from lain_cli.validate import validate_only_warning
 
 
@@ -17,7 +17,8 @@ def reposit(phase):
     validate_only_warning()
     info("Repositing ...")
 
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     authorize_and_check(phase, yml.appname)
 
     access_token = SSOAccess.get_token(phase)

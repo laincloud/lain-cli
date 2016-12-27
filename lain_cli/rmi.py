@@ -2,12 +2,13 @@
 from argh.decorators import arg
 
 import lain_sdk.mydocker as docker
-from lain_cli.utils import check_phase
+from lain_cli.utils import check_phase, get_phase_stage
 from lain_cli.utils import lain_yaml, get_meta_versions_from_tags, get_domain
 
 
 def get_repo_tags_to_remove(phase):
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     domain = get_domain(phase)
     registry = "registry.%s" % domain
     all_tags = docker.get_tag_list_in_docker_daemon(registry, yml.appname)

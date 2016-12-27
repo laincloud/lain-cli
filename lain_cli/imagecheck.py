@@ -32,7 +32,7 @@ def _check_phase_tag(phase):
 
 
 @arg('phase', help="lain phase, can be added by lain config save")
-def check(phase):    
+def check(phase):
     """
     Check current version of release and meta images in the remote registry
     """

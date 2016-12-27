@@ -20,6 +20,7 @@ LAIN_YAML_PATH = './lain.yaml'
 VALID_TAG_PATERN = re.compile(r"^(meta)-(?P<meta_version>\S+-\S+)$")
 
 DOMAIN_KEY = user_config.domain_key
+STAGE_KEY = user_config.stage_key
 PHASE_CHOICES = user_config.get_available_phases()
 
 requests.packages.urllib3.disable_warnings()
@@ -41,20 +42,28 @@ class TwoLevelCommandBase(object):
         '''return help message string'''
 
 
-def lain_yaml_data():
-    if not os.path.exists(LAIN_YAML_PATH):
-        error('Missing lain.yaml under current directory')
+def get_lain_yaml_path(stage=None):
+    if stage is None:
+        return LAIN_YAML_PATH
+    return "./lain.%s.yaml" % stage
+
+
+def lain_yaml_data(stage=None):
+    lain_yaml_path = get_lain_yaml_path(stage=stage)
+    if not os.path.exists(lain_yaml_path):
+        error('Missing %s under current directory' % lain_yaml_path)
         sys.exit(1)
-    with open(LAIN_YAML_PATH) as f:
+    with open(lain_yaml_path) as f:
         data = f.read()
     return yaml.load(data)
 
 
-def lain_yaml(ignore_prepare=False):
-    if not os.path.exists(LAIN_YAML_PATH):
-        error('Missing lain.yaml under current directory')
+def lain_yaml(ignore_prepare=False, stage=None):
+    lain_yaml_path = get_lain_yaml_path(stage=stage)
+    if not os.path.exists(lain_yaml_path):
+        error('Missing %s under current directory' % lain_yaml_path)
         sys.exit(1)
-    return LainYaml(LAIN_YAML_PATH, ignore_prepare=ignore_prepare)
+    return LainYaml(lain_yaml_path, ignore_prepare=ignore_prepare)
 
 
 def check_phase(phase):
@@ -73,8 +82,14 @@ def get_domain(phase):
     return domain
 
 
-def get_apptype():
-    with open(LAIN_YAML_PATH, 'r') as f:
+def get_phase_stage(phase):
+    stage = user_config.get_config().get(phase, {}).get(STAGE_KEY, None)
+    return stage
+
+
+def get_apptype(stage=None):
+    lain_yaml_path = get_lain_yaml_path(stage=stage)
+    with open(lain_yaml_path, 'r') as f:
         y = yaml.safe_load(f.read())
     return y.get('apptype', 'app')
 

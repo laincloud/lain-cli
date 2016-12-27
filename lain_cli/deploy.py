@@ -8,7 +8,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, info
 from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
-from lain_cli.utils import check_phase, get_domain, lain_yaml, is_resource_instance
+from lain_cli.utils import check_phase, get_domain, lain_yaml, is_resource_instance, get_phase_stage
 from lain_cli.utils import reposit_app, get_version_lists, get_app_state
 from lain_cli.utils import render_app_status, render_proc_status
 
@@ -24,7 +24,8 @@ def deploy(phase, version=None, target=None, proc=None, output='pretty'):
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
 
@@ -62,7 +63,7 @@ def deploy_app(phase, appname, console, auth_header, version, output):
                 deploy_params = {"meta_version": deploy_version}
             else:
                 deploy_version = valid_version
-        
+
         deploy_r = requests.put(app_url, headers=auth_header, json=deploy_params)
     elif app_r.status_code == 404:
         operation = "deploying"

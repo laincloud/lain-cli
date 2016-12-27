@@ -5,12 +5,12 @@ from argh.decorators import arg
 
 from lain_sdk.util import info, error
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import TwoLevelCommandBase, check_phase
+from lain_cli.utils import TwoLevelCommandBase, check_phase, get_phase_stage
 from lain_cli.utils import lain_yaml, get_domain
 
 class SecretCommands(TwoLevelCommandBase):
     '''
-    allow add secret files for app, lain will add the secret file into 
+    allow add secret files for app, lain will add the secret file into
     image of the proc when deploying.
     '''
 
@@ -37,7 +37,8 @@ class SecretCommands(TwoLevelCommandBase):
         """
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        stage = get_phase_stage(phase)
+        yml = lain_yaml(ignore_prepare=True, stage=stage)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)
@@ -45,12 +46,12 @@ class SecretCommands(TwoLevelCommandBase):
             error('proc {} does not exist'.format(procname))
             exit(1)
 
-        podgroup_name = "{}.{}.{}".format(yml.appname, proc.type.name, proc.name)       
+        podgroup_name = "{}.{}.{}".format(yml.appname, proc.type.name, proc.name)
         lvault_url = "http://lvault.%s/v2/secrets?app=%s&proc=%s" % (
             get_domain(phase), yml.appname, podgroup_name)
         if path:
             lvault_url += "&path=%s" % path
-        
+
         show_response = requests.get(lvault_url, headers=auth_header)
         if show_response.status_code < 300:
             info("secret file detail:")
@@ -83,7 +84,8 @@ class SecretCommands(TwoLevelCommandBase):
                 exit(1)
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        stage = get_phase_stage(phase)
+        yml = lain_yaml(ignore_prepare=True, stage=stage)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)
@@ -112,7 +114,8 @@ class SecretCommands(TwoLevelCommandBase):
         """
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        stage = get_phase_stage(phase)
+        yml = lain_yaml(ignore_prepare=True, stage=stage)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)
