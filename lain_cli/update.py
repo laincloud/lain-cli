@@ -10,5 +10,5 @@ def update():
     update_url = 'git+https://github.com/laincloud/{}.git'
     update_pkgs = ['entry', 'lain-cli', 'lain-sdk']
     for pkg in update_pkgs:
-        cmd = ['sudo', 'pip', 'install', update_url.format(pkg)]
+        cmd = ['sudo', 'pip', 'install', '--process-dependency-links', update_url.format(pkg)]
         subprocess.call(cmd)
