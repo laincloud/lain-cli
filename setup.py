@@ -23,6 +23,7 @@ requirements = [
     'tabulate==0.7.5',
     'protobuf==3.0.0b3',
     'entryclient==2.2.0',
+    'lain-sdk==2.2.2',
 ]
 
 setup(
@@ -32,5 +33,8 @@ setup(
     include_package_data=True,
     entry_points=ENTRY_POINTS,
     install_requires=requirements,
-    dependency_links=['https://github.com/laincloud/entry/archive/2.2.0.zip#egg=entryclient-2.2.0'],
+    dependency_links=[
+        'https://github.com/laincloud/entry/archive/2.2.0.zip#egg=entryclient-2.2.0',
+        'https://github.com/laincloud/lain-sdk/archive/2.2.2.zip#egg=lain-sdk-2.2.2',
+    ],
 )
