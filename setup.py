@@ -34,7 +34,7 @@ setup(
     entry_points=ENTRY_POINTS,
     install_requires=requirements,
     dependency_links=[
-        'https://github.com/laincloud/entry/archive/2.2.0.zip#egg=entryclient-2.2.0',
-        'https://github.com/laincloud/lain-sdk/archive/2.2.2.zip#egg=lain-sdk-2.2.2',
+        'https://github.com/laincloud/entry/archive/v2.2.0.zip#egg=entryclient-2.2.0',
+        'https://github.com/laincloud/lain-sdk/archive/v2.2.2.zip#egg=lain-sdk-2.2.2',
     ],
 )
