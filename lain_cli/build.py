@@ -32,10 +32,8 @@ def build(push=False, release=False):
             error("need git commit SHA1.")
             return None
         tag_release_name = yml.tag_meta_version(release_name)
-        docker.tag(release_name, tag_release_name)
         docker.push(tag_release_name)
 
         tag_meta_name = yml.tag_meta_version(meta_name)
-        docker.tag(meta_name, tag_meta_name)
         docker.push(tag_meta_name)
     info("Done lain build.")
