@@ -22,7 +22,7 @@ requirements = [
     'tabulate==0.7.5',
     'protobuf==3.0.0b3',
     'entryclient==2.2.0',
-    'lain-sdk==2.2.2',
+    'lain-sdk==2.3.0',
 ]
 
 setup(
