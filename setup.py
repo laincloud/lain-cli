@@ -12,7 +12,6 @@ requirements = [
     'PyYAML==3.11',
     'argh==0.26.1',
     'argcomplete==0.9.0',
-    'six==1.9.0',
     'websocket-client==0.32.0',
     'retrying==1.3.3',
     'docker-py==1.7.2',
@@ -33,8 +32,4 @@ setup(
     include_package_data=True,
     entry_points=ENTRY_POINTS,
     install_requires=requirements,
-    dependency_links=[
-        'https://github.com/laincloud/entry/archive/v2.2.0.zip#egg=entryclient-2.2.0',
-        'https://github.com/laincloud/lain-sdk/archive/v2.3.0.zip#egg=lain-sdk-2.3.0',
-    ],
 )
