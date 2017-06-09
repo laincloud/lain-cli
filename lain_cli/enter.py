@@ -3,20 +3,21 @@ from argh.decorators import arg
 from entryclient import EntryClient
 from lain_sdk.util import error
 from lain_cli.auth import SSOAccess, authorize_and_check
-from lain_cli.utils import check_phase, lain_yaml, get_domain
+from lain_cli.utils import check_phase, lain_yaml, get_domain, LAIN_YAML_PATH
 
 import os
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
 @arg('-t', '--target', help='The target appname to enter. If it\'s not set, it will be the appname of the working dir')
-def enter(phase, proc_name, instance_no, target=None):
+@arg('-c', '--config', help="the configuration file path")
+def enter(phase, proc_name, instance_no, target=None, config=LAIN_YAML_PATH):
     """
     Enter the container of specific proc
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
     domain = get_domain(phase)

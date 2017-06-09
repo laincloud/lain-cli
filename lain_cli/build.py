@@ -4,20 +4,21 @@ from argh.decorators import arg
 
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, warn, info
-from lain_cli.utils import lain_yaml
+from lain_cli.utils import lain_yaml, LAIN_YAML_PATH
 from lain_cli.validate import validate_only_warning
 
 
 @arg('--release', help="build from build image if it exists")
 @arg('--push',    help="tag release and meta image with version and push to registry")
-def build(push=False, release=False):
+@arg('-c', '--config', help="the configuration file path")
+def build(push=False, release=False, config=LAIN_YAML_PATH):
     """
     Build release and meta images
     """
 
     info("Building meta and release images ...")
-    validate_only_warning()
-    yml = lain_yaml()
+    validate_only_warning(config)
+    yml = lain_yaml(config)
     meta_version = yml.repo_meta_version()
     use_prepare = docker.exist(yml.img_names['prepare'])
     use_build = release and docker.exist(yml.img_names['build'])

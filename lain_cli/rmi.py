@@ -4,10 +4,11 @@ from argh.decorators import arg
 import lain_sdk.mydocker as docker
 from lain_cli.utils import check_phase
 from lain_cli.utils import lain_yaml, get_meta_versions_from_tags, get_domain
+from lain_cli.utils import LAIN_YAML_PATH
 
 
-def get_repo_tags_to_remove(phase):
-    yml = lain_yaml(ignore_prepare=True)
+def get_repo_tags_to_remove(phase, config):
+    yml = lain_yaml(config, ignore_prepare=True)
     domain = get_domain(phase)
     registry = "registry.%s" % domain
     all_tags = docker.get_tag_list_in_docker_daemon(registry, yml.appname)
@@ -27,12 +28,13 @@ def get_repo_tags_to_remove(phase):
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
-def rmi(phase):
+@arg('-c', '--config', help="the configuration file path")
+def rmi(phase, config=LAIN_YAML_PATH):
     """
     Remove app images in the local host
     """
 
     check_phase(phase)
-    repo_tags = get_repo_tags_to_remove(phase)
+    repo_tags = get_repo_tags_to_remove(phase, config)
     for image in repo_tags:
         docker.remove_image(image)

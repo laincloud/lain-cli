@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 import sys
-from utils import lain_yaml_data, lain_yaml
+from argh.decorators import arg
+
+from utils import lain_yaml_data, lain_yaml, LAIN_YAML_PATH
 from lain_sdk.util import error, info, warn
 from lain_sdk.yaml.validator import validate as sdk_validate
 
 
-def _validate():
-    if _exist_same_procname_for_depends():
+def _validate(config):
+    if _exist_same_procname_for_depends(config):
         return False, 'procname of the depended services and resources should be different'
 
-    yaml_source_data = lain_yaml_data()
+    yaml_source_data = lain_yaml_data(config)
     return sdk_validate(yaml_source_data)
 
 
-def _exist_same_procname_for_depends():
-    yml = lain_yaml(ignore_prepare=True)
+def _exist_same_procname_for_depends(config):
+    yml = lain_yaml(config, ignore_prepare=True)
 
     service_procs, resource_procs = [], []
     if hasattr(yml, 'use_services'):
@@ -33,26 +35,27 @@ def _exist_same_procname_for_depends():
     return len(commons) < len(service_procs) + len(resource_procs)
 
 
-def validate_only_warning():
-    valid, _ = _validate()
+def validate_only_warning(config):
+    valid, _ = _validate(config)
     if not valid:
         error('##############################')
-        error('#  maybe invalid lain.yaml   #')
+        error('#  maybe invalid %s          #' % config)
         error('#  check the schema with     #')
         error('#    lain validate           #')
         error('##############################')
 
 
-def validate():
+@arg('--config',  help="the configuration file path")
+def validate(config=LAIN_YAML_PATH):
     """
-    Validate lain.yaml
+    Validate config
     """
 
-    valid, msg = _validate()
+    valid, msg = _validate(config)
     if valid:
-        info('valid lain.yaml.')
+        info('valid %s.' % config)
     else:
-        error('invalid lain.yaml.')
+        error('invalid %s.' % config)
         warn('error message:')
         info(msg)
         # TODO : show related doc url

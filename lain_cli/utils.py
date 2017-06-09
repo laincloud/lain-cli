@@ -41,20 +41,20 @@ class TwoLevelCommandBase(object):
         '''return help message string'''
 
 
-def lain_yaml_data():
-    if not os.path.exists(LAIN_YAML_PATH):
-        error('Missing lain.yaml under current directory')
+def lain_yaml_data(config):
+    if not os.path.exists(config):
+        error('%s does not exist.' % config)
         sys.exit(1)
-    with open(LAIN_YAML_PATH) as f:
+    with open(config) as f:
         data = f.read()
     return yaml.load(data)
 
 
-def lain_yaml(ignore_prepare=False):
-    if not os.path.exists(LAIN_YAML_PATH):
-        error('Missing lain.yaml under current directory')
+def lain_yaml(config, ignore_prepare=False):
+    if not os.path.exists(config):
+        error('%s does not exist.' % config)
         sys.exit(1)
-    return LainYaml(LAIN_YAML_PATH, ignore_prepare=ignore_prepare)
+    return LainYaml(config, ignore_prepare=ignore_prepare)
 
 
 def check_phase(phase):
@@ -73,8 +73,8 @@ def get_domain(phase):
     return domain
 
 
-def get_apptype():
-    with open(LAIN_YAML_PATH, 'r') as f:
+def get_apptype(config):
+    with open(config, 'r') as f:
         y = yaml.safe_load(f.read())
     return y.get('apptype', 'app')
 

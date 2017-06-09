@@ -6,7 +6,7 @@ import pprint
 from argh.decorators import arg
 
 from lain_sdk.util import error, warn, info
-from lain_cli.utils import check_phase, lain_yaml, get_domain, render_proc_status, get_apptype
+from lain_cli.utils import check_phase, lain_yaml, get_domain, render_proc_status, get_apptype, LAIN_YAML_PATH
 from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
 
 
@@ -14,13 +14,14 @@ from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
 @arg('proc', help="proc name")
 @arg('-t', '--target', help='The target app to deploy, if not set, will be the appname of the working dir')
 @arg('-o', '--output', choices=['pretty', 'json', 'json-pretty'], default='pretty')
-def scale(phase, proc, target=None, cpu=None, memory=None, numinstances=None, output='pretty'):
+@arg('--config', help="the configuration file path")
+def scale(phase, proc, target=None, cpu=None, memory=None, numinstances=None, output='pretty', config=LAIN_YAML_PATH):
     """
     Scale proc with cpu/memory/num_instances
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
 
@@ -74,7 +75,7 @@ def scale(phase, proc, target=None, cpu=None, memory=None, numinstances=None, ou
             'payload': payload1,
             'success': scale_r.status_code < 300
         }
-        render_scale_result(scale_r, output)
+        render_scale_result(scale_r, output, config)
 
     if numinstances is not None:
         payload2['num_instances'] = numinstances
@@ -87,7 +88,7 @@ def scale(phase, proc, target=None, cpu=None, memory=None, numinstances=None, ou
             'payload': payload2,
             'success': scale_r.status_code < 300
         }
-        render_scale_result(scale_r, output)
+        render_scale_result(scale_r, output, config)
 
     info("Outline of scale result: ")
     for k, v in scale_results.iteritems():
@@ -136,13 +137,13 @@ def validate_parameters(cpu, memory, numinstances):
     return cpu, memory, numinstances
 
 
-def render_scale_result(scale_result, output):
+def render_scale_result(scale_result, output, config):
     try:
         result = scale_result.json()
         msg = result.pop('msg', '')
         if msg:
             print msg.decode('string_escape')
         info("proc status: ")
-        render_proc_status(result.get('proc'), get_apptype(), output=output)
+        render_proc_status(result.get('proc'), get_apptype(config), output=output)
     except Exception:
         pprint.pprint(scale_result.content)

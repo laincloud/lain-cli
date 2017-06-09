@@ -6,7 +6,7 @@ from argh.decorators import arg
 from lain_sdk.util import info, error
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
 from lain_cli.utils import TwoLevelCommandBase, check_phase
-from lain_cli.utils import lain_yaml, get_domain
+from lain_cli.utils import lain_yaml, get_domain, LAIN_YAML_PATH
 
 class SecretCommands(TwoLevelCommandBase):
     '''
@@ -29,7 +29,8 @@ class SecretCommands(TwoLevelCommandBase):
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('procname', help="proc name of the app")
-    def show(cls, phase, procname, path=None):
+    @arg('-c', '--config', help="the configuration file path")
+    def show(cls, phase, procname, path=None, config=LAIN_YAML_PATH):
         """
         show secret file of special procname in different phase
 
@@ -37,7 +38,7 @@ class SecretCommands(TwoLevelCommandBase):
         """
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)
@@ -62,7 +63,8 @@ class SecretCommands(TwoLevelCommandBase):
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('procname', help="proc name of the app")
     @arg('path', help='absolute path of config file, eg : /lain/app/config')
-    def add(cls, phase, procname, path, content=None, file=None):
+    @arg('--config', help="the configuration file path")
+    def add(cls, phase, procname, path, content=None, file=None, config=LAIN_YAML_PATH):
         """
         add secret file for different phase
 
@@ -83,7 +85,7 @@ class SecretCommands(TwoLevelCommandBase):
                 exit(1)
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)
@@ -106,13 +108,14 @@ class SecretCommands(TwoLevelCommandBase):
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('procname', help="proc name of the app")
     @arg('path', help='absolute path of config file, eg : /lain/app/config')
-    def delete(cls, phase, procname, path):
+    @arg('-c', '--config', help="the configuration file path")
+    def delete(cls, phase, procname, path, config=LAIN_YAML_PATH):
         """
         delete secret file for different phase
         """
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         proc = yml.procs.get(procname, None)

@@ -6,18 +6,19 @@ from argh.decorators import arg
 from lain_sdk.util import error
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
 from lain_cli.utils import check_phase, get_domain, lain_yaml
-from lain_cli.utils import render_app_status
+from lain_cli.utils import render_app_status, LAIN_YAML_PATH
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
 @arg('-o', '--output', choices=['pretty', 'json', 'json-pretty'], default='pretty')
-def ps(phase, output='pretty'):
+@arg('-c', '--config', help="the configuration file path")
+def ps(phase, output='pretty', config=LAIN_YAML_PATH):
     """
     Show basic deploy messages of app
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     authorize_and_check(phase, yml.appname)
     console = "console.%s" % get_domain(phase)
 

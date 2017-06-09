@@ -4,19 +4,20 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, warn, info
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import check_phase, get_domain, lain_yaml
+from lain_cli.utils import check_phase, get_domain, lain_yaml, LAIN_YAML_PATH
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
 @arg('-t', '--target', help='The target app to deploy, if not set, will be the appname of the working dir')
 @arg('-p', '--proc', help='The proc wanted to undeploy')
-def undeploy(phase, target=None, proc=None):
+@arg('-c', '--config', help="the configuration file path")
+def undeploy(phase, target=None, proc=None, config=LAIN_YAML_PATH):
     """
     Undeploy specific proc in the app or the whole app
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
 
