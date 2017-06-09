@@ -4,18 +4,19 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, info
 import lain_sdk.mydocker as docker
-from lain_cli.utils import check_phase, lain_yaml, get_domain
+from lain_cli.utils import check_phase, lain_yaml, get_domain, LAIN_YAML_PATH
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
-def push(phase):
+@arg('-c', '--config', help="the configuration file path")
+def push(phase, config=LAIN_YAML_PATH):
     """
     Push release and meta images
     """
 
     check_phase(phase)
     info("Pushing meta and release images ...")
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     meta_version = yml.repo_meta_version()
     if meta_version is None:
         error("please git commit.")

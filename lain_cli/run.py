@@ -6,14 +6,14 @@ from argh.decorators import arg
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, info
 from lain_sdk.yaml.conf import DOCKER_APP_ROOT
-from lain_cli.utils import lain_yaml
+from lain_cli.utils import lain_yaml, LAIN_YAML_PATH
 
 
 LOCAL_VOLUME_BASE = "/tmp/lain/run"
 
 
-def gen_run_ctx(proc_name):
-    yml = lain_yaml(ignore_prepare=True)
+def gen_run_ctx(proc_name, config):
+    yml = lain_yaml(config, ignore_prepare=True)
     proc = yml.procs.get(proc_name, None)
     if proc is None:
         error('proc {} does not exist'.format(proc_name))
@@ -44,12 +44,13 @@ def gen_run_ctx(proc_name):
 
 
 @arg('proc_name')
-def run(proc_name):
+@arg('-c', '--config', help="the configuration file path")
+def run(proc_name, config=LAIN_YAML_PATH):
     """
     Run proc instance in the local host
     """
 
-    container_name, image, working_dir, port, cmd, envs, volumes, _ = gen_run_ctx(proc_name)
+    container_name, image, working_dir, port, cmd, envs, volumes, _ = gen_run_ctx(proc_name, config)
     docker.proc_run(container_name, image, working_dir, port, cmd, envs, volumes)
     info("container name: {}".format(container_name))
     if port:
@@ -57,12 +58,13 @@ def run(proc_name):
 
 
 @arg('proc_name')
-def debug(proc_name):
+@arg('-c', '--config', help="the configuration file path")
+def debug(proc_name, config=LAIN_YAML_PATH):
     """
     Debug proc instance in the local host
     """
 
-    container_name, _, _, _, _, _, _, _ = gen_run_ctx(proc_name)
+    container_name, _, _, _, _, _, _, _ = gen_run_ctx(proc_name, config)
     docker.proc_debug(container_name)
 
 

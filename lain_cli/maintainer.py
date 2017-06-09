@@ -5,7 +5,8 @@ from argh.decorators import arg
 
 from lain_sdk.util import info, error
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import TwoLevelCommandBase, check_phase, get_domain, lain_yaml
+from lain_cli.utils import TwoLevelCommandBase, check_phase, get_domain
+from lain_cli.utils import lain_yaml, LAIN_YAML_PATH
 
 
 class MaintainerCommands(TwoLevelCommandBase):
@@ -27,7 +28,8 @@ class MaintainerCommands(TwoLevelCommandBase):
 
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
-    def show(cls, phase, username=None):
+    @arg('-c', '--config', help="the configuration file path")
+    def show(cls, phase, username=None, config=LAIN_YAML_PATH):
         """
         show maintainers list or specical maitainer message of app in different phase
 
@@ -35,7 +37,7 @@ class MaintainerCommands(TwoLevelCommandBase):
         """
         
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         console = "console.%s" % get_domain(phase)
@@ -56,13 +58,14 @@ class MaintainerCommands(TwoLevelCommandBase):
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('username', help="sso username to add")
     @arg('role', help='role to assigned to the user', choices=['admin', 'normal'])
-    def add(cls, phase, username, role):
+    @arg('-c', '--config', help="the configuration file path")
+    def add(cls, phase, username, role, config=LAIN_YAML_PATH):
         """
         add maintianer for different phase
         """
         
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         console = "console.%s" % get_domain(phase)
@@ -81,13 +84,14 @@ class MaintainerCommands(TwoLevelCommandBase):
     @classmethod
     @arg('phase', help="lain cluster phase id, can be added by lain config save")
     @arg('username', help="sso username")
-    def delete(cls, phase, username):
+    @arg('-c', '--config', help="the configuration file path")
+    def delete(cls, phase, username, config=LAIN_YAML_PATH):
         """
         delete maintianer for different phase
         """
 
         check_phase(phase)
-        yml = lain_yaml(ignore_prepare=True)
+        yml = lain_yaml(config, ignore_prepare=True)
         authorize_and_check(phase, yml.appname)
         auth_header = get_auth_header(SSOAccess.get_token(phase))
         console = "console.%s" % get_domain(phase)

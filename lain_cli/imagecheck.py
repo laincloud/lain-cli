@@ -3,11 +3,11 @@ from argh.decorators import arg
 
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, info
-from lain_cli.utils import lain_yaml, check_phase, get_domain
+from lain_cli.utils import lain_yaml, check_phase, get_domain, LAIN_YAML_PATH
 
 
-def _check_phase_tag(phase):
-    yml = lain_yaml(ignore_prepare=True)
+def _check_phase_tag(phase, config):
+    yml = lain_yaml(config, ignore_prepare=True)
     meta_version = yml.repo_meta_version()
     if meta_version is None:
         error("please git commit.")
@@ -32,13 +32,14 @@ def _check_phase_tag(phase):
 
 
 @arg('phase', help="lain phase, can be added by lain config save")
-def check(phase):    
+@arg('-c', '--config', help="the configuration file path")
+def check(phase, config=LAIN_YAML_PATH):
     """
     Check current version of release and meta images in the remote registry
     """
 
     check_phase(phase)
-    tag_ok = _check_phase_tag(phase)
+    tag_ok = _check_phase_tag(phase, config)
     if tag_ok:
         info("Image Tag OK in registry")
     else:

@@ -11,6 +11,7 @@ from lain_cli.auth import SSOAccess, authorize_and_check, get_auth_header
 from lain_cli.utils import check_phase, get_domain, lain_yaml, is_resource_instance
 from lain_cli.utils import reposit_app, get_version_lists, get_app_state
 from lain_cli.utils import render_app_status, render_proc_status
+from lain_cli.utils import LAIN_YAML_PATH
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -18,13 +19,14 @@ from lain_cli.utils import render_app_status, render_proc_status
 @arg('-t', '--target', help='The target app to deploy, if not set, will be the appname of the working dir')
 @arg('-p', '--proc', help='The proc need to deploy, should not be used with argh -v')
 @arg('-o', '--output', choices=['pretty', 'json', 'json-pretty'], default='pretty')
-def deploy(phase, version=None, target=None, proc=None, output='pretty'):
+@arg('-c', '--config', help="the configuration file path")
+def deploy(phase, version=None, target=None, proc=None, output='pretty', config=LAIN_YAML_PATH):
     """
     Deploy specific proc in the app or the whole app
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    yml = lain_yaml(config, ignore_prepare=True)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
 
