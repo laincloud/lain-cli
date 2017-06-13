@@ -5,7 +5,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import error
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import check_phase, get_domain, lain_yaml
+from lain_cli.utils import check_phase, get_domain, lain_yaml, get_phase_stage
 from lain_cli.utils import render_app_status
 
 
@@ -17,7 +17,8 @@ def ps(phase, output='pretty'):
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     authorize_and_check(phase, yml.appname)
     console = "console.%s" % get_domain(phase)
 

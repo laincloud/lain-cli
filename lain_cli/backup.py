@@ -5,7 +5,7 @@ import requests, json
 from argh.decorators import arg, aliases
 
 from lain_sdk.util import warn
-from lain_cli.utils import lain_yaml_data, check_phase
+from lain_cli.utils import lain_yaml_data, check_phase, get_phase_stage
 from lain_cli.utils import TwoLevelCommandBase, get_domain
 
 
@@ -30,7 +30,8 @@ class BackupCommands(TwoLevelCommandBase):
         list backup jobs for this lain app
         """
         check_phase(phase)
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase)
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/cron/jobs" % appname
         data = cls._request('GET', phase, route, None)
         if data:
@@ -46,7 +47,8 @@ class BackupCommands(TwoLevelCommandBase):
         list files in the incremental backup direcotry
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/proc/%s/backups/%s?open=true" % (appname, proc[0], path[0])
         data = cls._request('GET', phase[0], route, None)
         if data:
@@ -63,7 +65,8 @@ class BackupCommands(TwoLevelCommandBase):
         get all the backups of the given proc's volume
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/proc/%s/backups?volume=%s" % (appname, proc[0], volume[0])
         data = cls._request('GET', phase[0], route, None)
         if data:
@@ -78,7 +81,8 @@ class BackupCommands(TwoLevelCommandBase):
         delete a backup of a proc
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/proc/%s/backups/actions/delete" % (appname, proc[0])
         data = cls._request('POST', phase[0], route, {'files': files})
         if data:
@@ -94,7 +98,8 @@ class BackupCommands(TwoLevelCommandBase):
         recover the volume from given backup
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         if not files:
             route = "api/v2/app/%s/proc/%s/backups/%s/actions/recover" % (appname, proc[0], backup[0])
             data = cls._request('POST', phase[0], route, None)
@@ -116,7 +121,8 @@ class BackupCommands(TwoLevelCommandBase):
         recover a instance's volume from other instance's backup
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         if not files:
             route = "api/v2/app/%s/proc/%s/backups/%s/actions/migrate" % (appname, proc[0], backup[0])
             data = cls._request('POST', phase[0], route, {"volume": volume, "to": to})
@@ -135,7 +141,8 @@ class BackupCommands(TwoLevelCommandBase):
         list job records of this lain app
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/cron/records" % appname
         if rid:
             route = "%s/%s" % (route, rid)
@@ -153,7 +160,8 @@ class BackupCommands(TwoLevelCommandBase):
         run a job right now
         """
         check_phase(phase[0])
-        appname = lain_yaml_data()['appname']
+        stage = get_phase_stage(phase[0])
+        appname = lain_yaml_data(stage=stage)['appname']
         route = "api/v2/app/%s/cron/jobs/%s/actions/run" % (appname, id[0])
         data = cls._request('POST', phase[0], route, None)
         if data:

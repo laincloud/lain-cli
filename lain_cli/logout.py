@@ -17,7 +17,7 @@ def logout(phase):
     domain = get_domain(phase)
     logout_success = SSOAccess.clear_token(phase)
     if logout_success:
-    	docker.logout('registry.%s'%domain)
+        docker.logout('registry.%s'%domain)
         info("Logout successfully!")
     else:
         warn('Logout failed!')

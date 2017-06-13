@@ -3,7 +3,7 @@ from argh.decorators import arg
 
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, info
-from lain_cli.utils import check_phase, lain_yaml, get_domain
+from lain_cli.utils import check_phase, lain_yaml, get_domain, get_phase_stage
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -14,7 +14,8 @@ def tag(phase):
 
     check_phase(phase)
     info("Taging meta and relese image ...")
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     meta_version = yml.repo_meta_version()
     if meta_version is None:
         error("please git commit.")

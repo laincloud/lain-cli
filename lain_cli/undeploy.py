@@ -4,7 +4,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, warn, info
 from lain_cli.auth import SSOAccess, get_auth_header, authorize_and_check
-from lain_cli.utils import check_phase, get_domain, lain_yaml
+from lain_cli.utils import check_phase, get_domain, lain_yaml, get_phase_stage
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -16,7 +16,8 @@ def undeploy(phase, target=None, proc=None):
     """
 
     check_phase(phase)
-    yml = lain_yaml(ignore_prepare=True)
+    stage = get_phase_stage(phase)
+    yml = lain_yaml(ignore_prepare=True, stage=stage)
     appname = target if target else yml.appname
     authorize_and_check(phase, appname)
 
