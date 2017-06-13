@@ -22,8 +22,8 @@ def tag(phase):
         return None
     domain = get_domain(phase)
     registry = "registry.%s" % domain
-    meta_tag = "%s:meta" % (yml.appname, )
-    release_tag = "%s:release" % (yml.appname, )
+    meta_tag = "%s:meta-%s" % (yml.appname, meta_version)
+    release_tag = "%s:release-%s" % (yml.appname, meta_version)
     phase_meta_tag = docker.gen_image_name(yml.appname, 'meta', meta_version, registry)
     phase_release_tag = docker.gen_image_name(yml.appname, 'release', meta_version, registry)
     meta_code = docker.tag(meta_tag, phase_meta_tag)
