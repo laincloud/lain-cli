@@ -11,6 +11,7 @@ from lain_sdk.yaml.conf import user_config
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, warn, info
 from lain_sdk.lain_yaml import LainYaml
+from subprocess import check_output
 from abc import ABCMeta, abstractmethod
 from tabulate import tabulate
 
@@ -60,7 +61,8 @@ def lain_yaml(ignore_prepare=False):
 def check_phase(phase):
     if phase not in PHASE_CHOICES:
         error('phase %s not in available phases: %s.' % (phase, PHASE_CHOICES))
-        warn('phase can be added using: lain config save %s domain {{ domain }}' % phase)
+        warn(
+            'phase can be added using: lain config save %s domain {{ domain }}' % phase)
         exit(1)
 
 
@@ -110,7 +112,8 @@ def get_meta_versions_from_tags(tags):
 
 
 def get_version_lists(phase, appname):
-    tag_list = docker.get_tag_list_in_registry("registry." + get_domain(phase), appname)
+    tag_list = docker.get_tag_list_in_registry(
+        "registry." + get_domain(phase), appname)
     version_list = available_meta_versions(tag_list)
     return version_list
 
@@ -122,7 +125,8 @@ def available_meta_versions(tag_list):
         if meta_version:
             _timestamp = float(meta_version.split('-')[0])
             versions[_timestamp] = meta_version
-    ordered_versions = collections.OrderedDict(sorted(versions.items(), reverse=True))
+    ordered_versions = collections.OrderedDict(
+        sorted(versions.items(), reverse=True))
     return ordered_versions.values()
 
 
@@ -201,7 +205,8 @@ def render_app_status(app_status, output='pretty'):
     if app_status.get('procs'):
         info('Proc list:')
         for proc_status in app_status.get("procs"):
-            render_proc_status(proc_status, app_status.get('apptype'), output=output)
+            render_proc_status(proc_status, app_status.get(
+                'apptype'), output=output)
 
     if app_status.get('portals'):
         info('Portal list:')
@@ -216,7 +221,8 @@ def render_app_status(app_status, output='pretty'):
     if app_status.get('useresources'):
         info('Use Resources list:')
         for use_resource in app_status.get("useresources"):
-            render_app_status(use_resource.get("resourceinstance"), output=output)
+            render_app_status(use_resource.get(
+                "resourceinstance"), output=output)
 
     if app_status.get('resourceinstances'):
         info('Resource Instances list:')
@@ -327,3 +333,29 @@ def is_resource_instance(appname):
 def exit_gracefully(signal, frame):
     warn("You pressed Ctrl + C, and I will exit...")
     sys.exit(130)
+
+
+def git_authors(last_id, next_id):
+    git_authors_cmd_format = "git show -s --format=%%aE %s...%s"
+    git_authors_cmd = git_authors_cmd_format % (last_id, next_id)
+    try:
+        authors_str = check_output(git_authors_cmd, shell=True)
+        authors = authors_str.split('\n')
+        unique_authors = set()
+        for author in authors:
+            if author.strip(' ') == '':
+                continue
+            unique_authors.add(author)
+        return list(unique_authors)
+    except Exception:
+        return []
+
+
+def git_commit():
+    git_commit_cmd = 'git show -s --format=%H'
+    try:
+        commit_id = check_output(git_commit_cmd, shell=True)
+        commit_id = commit_id.strip()
+        return commit_id.strip('\n')
+    except Exception:
+        return ""
