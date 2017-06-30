@@ -1,0 +1,29 @@
+appname: hello  # 全局唯一的应用名
+
+build:  # 描述如何构建应用 image ，例如安装依赖等，供 release 和 test 使用
+  base: golang  # 一个已存在的 docker image ，包含编译环境和默认的配置     
+  script:  # 会在 docker container 的 /lain/app/ 下 clone 代码并执行下列命令（下同）
+    - go build -o hello
+
+release:
+  dest_base: ubuntu
+  copy:
+    - src: hello
+      dest: /usr/bin/hello
+
+test:  # 描述如何从 build 的结果 image 执行测试
+  script:   # 这些命令基于 build 的结果 image 运行，任何一个命令返回非0退出码即认为测试失败
+    - go test
+  
+web:  # 定义一个 web 服务
+  cmd: hello  # 基于 release 产生的发布用 image 运行
+  port: 80  # 服务监听的端口，默认为自动分配一个放在 `PORT` 环境变量里
+  setup_time: 40
+  kill_timeout: 30
+  secret_files:
+    - "hello.hello"
+    - "secret"  
+  
+notify:
+  slack: "#hello"  # 应用相关的通知和报警都会发送到该 slack channel
+
