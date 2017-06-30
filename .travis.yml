@@ -6,6 +6,7 @@ install:
     # https://docs.travis-ci.com/user/languages/python/#Pre-installed-packages
     - pip install --upgrade setuptools pytest pytest-cov coveralls
     - python setup.py install
+    - ln -s tests/lain.yaml lain.yaml
 script: py.test --cov=lain_cli
 after_success:
     coveralls

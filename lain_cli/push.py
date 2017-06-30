@@ -6,7 +6,7 @@ from argh.decorators import arg
 
 from lain_sdk.util import error, warn, info
 import lain_sdk.mydocker as docker
-from lain_cli.utils import check_phase, lain_yaml, get_domain, git_authors, git_commit
+from lain_cli.utils import check_phase, lain_yaml, get_domain, git_authors, git_commit_id
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -36,15 +36,15 @@ def push(phase):
     else:
         info("Done lain push.")
         info("notifying lain push.")
-        last_commit = fetch_last_commit(domain, yml.appname)
-        if last_commit is not None:
-            notify_diffs(domain, yml.appname, last_commit)
+        last_commit_id = fetch_last_commit_id(domain, yml.appname)
+        if last_commit_id is not None:
+            notify_diffs(domain, yml.appname, last_commit_id)
         else:
             warn("Notified Nothing!")
         info("Done notifying lain push.")
 
 
-def fetch_last_commit(domain, appname):
+def fetch_last_commit_id(domain, appname):
     url = "http://console.%s/api/v1/repos/%s/details/" % (domain, appname)
     commitid_length = 40
     try:
@@ -57,24 +57,26 @@ def fetch_last_commit(domain, appname):
             warn('Fetch lastest meta version failed with error: %s' %
                   datas['msg'])
             return None
-        meta_version = datas['detail'].get('meta_version', '')
-        giturl = datas['detail'].get('giturl', '')
-        if giturl.strip(' ') == '':
+        details = datas['detail']
+        meta_version = details.get('meta_version', '')
+        giturl = details.get('giturl', '')
+        if giturl.strip() == '':
             warn('No Giturl Bound')
             return None
-        last_commit = meta_version[-commitid_length:]
-        return last_commit
+        last_commit_id = meta_version[-commitid_length:]
+        return last_commit_id
     except Exception:
+        # do nothing, compatible with old console versions
         pass
     return None
 
 
-def notify_diffs(domain, appname, last_commit):
-    current_git_commit = git_commit()
-    if current_git_commit == last_commit:
+def notify_diffs(domain, appname, last_commit_id):
+    current_git_commit = git_commit_id()
+    if current_git_commit == last_commit_id:
         warn('nothing changed!')
         return
-    unique_authors = git_authors(last_commit, 'HEAD')
+    unique_authors = git_authors(last_commit_id, 'HEAD')
     headers = {"Content-type": "application/json"}
     url = "http://console.%s/api/v1/repos/%s/push/" % (domain, appname)
     body = {'authors': unique_authors}

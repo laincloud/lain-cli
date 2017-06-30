@@ -340,7 +340,7 @@ def git_authors(last_id, next_id):
     git_authors_cmd = git_authors_cmd_format % (last_id, next_id)
     try:
         authors_str = check_output(git_authors_cmd, shell=True)
-        authors = authors_str.split('\n')
+        authors = authors_str.split()
         unique_authors = set()
         for author in authors:
             if author.strip(' ') == '':
@@ -351,11 +351,10 @@ def git_authors(last_id, next_id):
         return []
 
 
-def git_commit():
-    git_commit_cmd = 'git show -s --format=%H'
+def git_commit_id():
+    git_commit_id_cmd = 'git show -s --format=%H'
     try:
-        commit_id = check_output(git_commit_cmd, shell=True)
-        commit_id = commit_id.strip()
-        return commit_id.strip('\n')
+        commit_id = check_output(git_commit_id_cmd, shell=True)
+        return commit_id.strip()
     except Exception:
         return ""
