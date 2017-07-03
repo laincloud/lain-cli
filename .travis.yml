@@ -8,5 +8,3 @@ install:
     - python setup.py install
     - ln -s tests/lain.yaml lain.yaml
 script: py.test --cov=lain_cli
-after_success:
-    coveralls
