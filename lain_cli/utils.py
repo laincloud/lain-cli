@@ -350,6 +350,20 @@ def git_authors(last_id, next_id):
     except Exception:
         return []
 
+def git_commits(last_id, next_id):
+    git_commits_cmd_format = "git log --cherry-pick --right-only %s...%s --pretty=format:%%h,%%an,%%s"
+    git_commits_cmd = git_commits_cmd_format % (last_id, next_id)
+    try:
+        commits_str = check_output(git_commits_cmd, shell=True)
+        commits = commits_str.split()
+        commits_list = []
+        for cmt in commits:
+            infos = cmt.split(',')
+            commits_list.append({"id":infos[0], "message": ','.join(infos[1:])})
+        return commits_list
+    except Exception:
+        return []
+
 
 def git_commit_id():
     git_commit_id_cmd = 'git show -s --format=%H'
