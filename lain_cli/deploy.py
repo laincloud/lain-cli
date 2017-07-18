@@ -79,7 +79,10 @@ def deploy_app(phase, appname, console, auth_header, version, output):
             info("app status: ")
             render_app_status(deploy_r.json()['app'], output=output)
         else:
-            check_deploy_result(operation, console, appname, auth_header)
+            result = check_deploy_result(operation, console, appname, auth_header)
+            if result != 'Done':
+                error("deploy latest version of %s to %s failed: %s" % (appname, phase, result))
+                exit(1)
         if former_version:
             info("app {} deploy operation:".format(appname))
             info("    last version: {}".format(former_version))
@@ -88,7 +91,7 @@ def deploy_app(phase, appname, console, auth_header, version, output):
             info("    lain deploy -v {}".format(former_version))
     else:
         error("deploy latest version of %s to %s failed: %s" % (appname, phase, deploy_r.json()['msg']))
-
+        exit(1)
 
 def check_deploy_result(operation, console, appname, auth_header):
     i = 0
@@ -142,7 +145,7 @@ def deploy_proc(proc, appname, console, auth_header, output):
             pprint.pprint(deploy_r.content)
     else:
         error("deploy proc %s fail : %s" % (proc, deploy_r.json()['msg']))
-
+        exit(1)
 
 def print_available_version(version, version_list):
     if not version_list:
