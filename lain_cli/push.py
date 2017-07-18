@@ -7,7 +7,7 @@ from argh.decorators import arg
 from lain_sdk.util import error, warn, info
 from lain_cli.auth import SSOAccess, get_auth_header
 import lain_sdk.mydocker as docker
-from lain_cli.utils import check_phase, lain_yaml, get_domain, git_authors, git_commit_id
+from lain_cli.utils import check_phase, lain_yaml, get_domain, git_authors, git_commits, git_commit_id
 
 
 @arg('phase', help="lain cluster phase id, can be added by lain config save")
@@ -81,10 +81,11 @@ def notify_diffs(domain, appname, last_commit_id, auth_header):
         warn('nothing changed!')
         return
     unique_authors = git_authors(last_commit_id, 'HEAD')
+    commits_info = git_commits(last_commit_id, 'HEAD')
     headers = {"Content-type": "application/json"}
     headers.update(auth_header)
     url = "http://console.%s/api/v1/repos/%s/push/" % (domain, appname)
-    body = {'authors': unique_authors}
+    body = {'authors': unique_authors, 'commits': commits_info}
     try:
         resp = requests.request(
             "POST", url, headers=headers, json=body, timeout=10)
