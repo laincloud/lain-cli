@@ -340,7 +340,7 @@ def git_authors(last_id, next_id):
     git_authors_cmd = git_authors_cmd_format % (last_id, next_id)
     try:
         authors_str = check_output(git_authors_cmd, shell=True)
-        authors = authors_str.split()
+        authors = authors_str.split('\n')
         unique_authors = set()
         for author in authors:
             if author.strip(' ') == '':
@@ -351,11 +351,11 @@ def git_authors(last_id, next_id):
         return []
 
 def git_commits(last_id, next_id):
-    git_commits_cmd_format = "git log --cherry-pick --right-only %s...%s --pretty=format:%%h,%%an,%%s"
+    git_commits_cmd_format = "git log --cherry-pick --right-only %s...%s '--pretty=format:%%h,%%an [%%s]'"
     git_commits_cmd = git_commits_cmd_format % (last_id, next_id)
     try:
         commits_str = check_output(git_commits_cmd, shell=True)
-        commits = commits_str.split()
+        commits = commits_str.split('\n')
         commits_list = []
         for cmt in commits:
             infos = cmt.split(',')
@@ -369,6 +369,6 @@ def git_commit_id():
     git_commit_id_cmd = 'git show -s --format=%H'
     try:
         commit_id = check_output(git_commit_id_cmd, shell=True)
-        return commit_id.strip()
+        return commit_id.strip('\n')
     except Exception:
         return ""
