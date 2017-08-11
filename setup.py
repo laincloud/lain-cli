@@ -14,7 +14,7 @@ requirements = [
     'requests==2.6.0',
     'tabulate==0.7.5',
     'entryclient==2.3.0',
-    'lain-sdk==2.3.5',
+    'lain-sdk==2.3.8',
     'pytest',
 ]
 
