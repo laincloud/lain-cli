@@ -1,13 +1,15 @@
 language: python
 python:
-    - 2.7
+- 2.7
 install:
-    # Travis's pre-installed pip and pytest are too old:
-    # https://docs.travis-ci.com/user/languages/python/#Pre-installed-packages
-    - pip install --upgrade setuptools pytest pytest-cov codecov
-    - python setup.py install
-    - ln -s tests/lain.yaml lain.yaml
+- pip install --upgrade setuptools pytest pytest-cov codecov
+- python setup.py install
+- ln -s tests/lain.yaml lain.yaml
 script: py.test --cov=lain_cli
-
+deploy:
+  provider: pypi
+  user: laincloud
+  password:
+    secure: I4FuiBasWXOULfqriitfxiM+frJpSUtKelwNcffIUtRt4/V9O6alq99UmHEeq8H5ZCCqjVc/FuRFEl6OC81519K/1y+7qG9y5kQE+SQBqL/UsbikqKcWf6DXGn/ARge019HytoaHrurJk2ESst+1GhvMBJsSz5BLKGJXA6t/A50DiBv5X1e2BwzXmW5LkcIpERSjfB8K0iDkq2TYG/TF8kaQJsCqm2oJx4E1FLPya04mkjHkv20HZK1JOLecoUOWjO7WNmDRblWzC+AqhK0w9VEdS/vv+nKkWL7Da+pg6VZ6M7zLswjcFhTdv6ugcsbMhMWYkgV2CvW7S0HPqYVcV6CXtua2gNzwPkj5q0m/bPxexnFU4zSy+CBADIz5fMtIDciINPEENQSFR5g+OC1fGhsYzQTKKYGIonF7Sq12/bTGi59phhHZeK4YW5+fgquJvtr5qC4SjiYIUqLJTy970E5fK0Ni/7hERnJ+/Z6YKd3i1/S36ALjOrJUkEJvwrOwK47OLTQLUak/vzDry2O8c1D4fOoEavH8+XaVYijh7DqunHW5GKu5OHqAiGjTg51eDOVnUEty1j3Yli2DOX71WPvk7pIW8xcHjXJn+ww1Zgt0ErcJJoUFIkF6t0iWoMTSJA7Cf7YilKkTVrNoLhbmoGJ/W05wW+DfM3LCRqEbd1s=
 after_success:
-    - codecov
+- codecov
