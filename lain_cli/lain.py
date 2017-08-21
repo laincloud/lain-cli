@@ -11,6 +11,7 @@ from lain_cli.prepare import prepare
 from lain_cli.build import build
 from lain_cli.tag import tag
 from lain_cli.push import push
+from lain_cli.sync import sync
 from lain_cli.deploy import deploy
 from lain_cli.scale import scale
 from lain_cli.ps import ps
@@ -48,7 +49,7 @@ logging.getLogger("docker").setLevel(logging.WARNING)
 one_level_commands = [
     appversion, attach, build, check, clear, dashboard, debug,
     deploy, enter, login, logout, meta, prepare, prepare_update,
-    ps, push, refresh, reposit, rm, rmi, run,
+    ps, push, refresh, reposit, rm, rmi, run, sync,
     scale, stop, tag, test, undeploy, update, validate, version
 ]
 
