@@ -78,7 +78,7 @@ def fetch_last_commit_id(domain, appname, auth_header):
 def notify_diffs(domain, appname, last_commit_id, auth_header):
     current_git_commit = git_commit_id()
     if current_git_commit == last_commit_id:
-        warn('nothing changed!')
+        warn('Nothing Changed!')
         return
     unique_authors = git_authors(last_commit_id, 'HEAD')
     commits_info = git_commits(last_commit_id, 'HEAD')
