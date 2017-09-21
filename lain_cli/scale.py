@@ -129,9 +129,12 @@ def validate_parameters(cpu, memory, numinstances):
     if memory is not None:
         memory = str(memory)
         try:
-            humanfriendly.parse_size(memory)
+            if humanfriendly.parse_size(memory) < 4194304:
+                error('invalid parameter: memory (%s) should >= 4M'%memory)
+                exit(1)
         except humanfriendly.InvalidSize:
-            warn('invalid parameter: memory (%s) humanfriendly.parse_size(memory) failed'%memory)
+            error('invalid parameter: memory (%s) humanfriendly.parse_size(memory) failed'%memory)
+            exit(1)
 
     return cpu, memory, numinstances
 
