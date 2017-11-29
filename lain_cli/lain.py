@@ -44,6 +44,7 @@ from lain_cli.utils import exit_gracefully
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("docker").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 one_level_commands = [

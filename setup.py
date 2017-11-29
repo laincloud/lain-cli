@@ -10,10 +10,11 @@ lain = lain_cli.lain:main
 requirements = [
     'PyYAML==3.11',
     'argh==0.26.1',
+    'argcomplete==1.9.3' ,
     'humanfriendly==1.29',
     'requests>=2.6.1',
     'tabulate==0.7.5',
-    'entryclient==2.3.0',
+    'entryclient>=2.3.2',
     'lain-sdk>=2.3.9',
     'pytest',
 ]
