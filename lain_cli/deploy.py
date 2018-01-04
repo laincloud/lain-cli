@@ -35,8 +35,6 @@ def deploy(phase, version=None, target=None, proc=None, output='pretty'):
     if proc:
         deploy_proc(proc, appname, console, auth_header, output)
     else:
-        if not is_resource_instance(appname):
-            reposit_app(phase, appname, console, auth_header)
         deploy_app(phase, appname, console, auth_header, version, output)
 
 
