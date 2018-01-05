@@ -1,0 +1,20 @@
+appname: {{ appname }}
+
+build:
+  base: laincloud/python:3.6  # Or ${private_registry}/library/python:3.6
+                              # Stdout/Stderr will be redirected to /lain/logs/default/currenct
+  prepare:
+    version: 201801081549  # Please increase ${version} to update prepare image
+    script:
+      - go get -u github.com/golang/dep/cmd/dep  # Or any other package manager for golang
+      - mkdir -p $GOPATH/src/{{ package_path }}/{{ appname }}
+      - cp -rf . $GOPATH/src/{{ package_path }}/{{ appname }}  # Copy code to $GOPATH/src
+      - cd $GOPATH/src/{{ package_path }}/{{ appname }} && dep ensure  # Install dependencies by dep
+  script:
+    - cp -rf . $GOPATH/src/{{ package_path }}
+    - go install {{ package_path }}/{{ appname }}
+
+web:
+  cmd: /lain/app/{{ appname }}  # Please use absolute path
+  healthcheck: /ping
+

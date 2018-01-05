@@ -8,6 +8,7 @@ lain = lain_cli.lain:main
 """
 
 requirements = [
+    'Jinja2>=2.10',
     'PyYAML==3.11',
     'argh==0.26.1',
     'argcomplete==1.9.3',
