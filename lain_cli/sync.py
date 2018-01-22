@@ -1,4 +1,5 @@
 import requests
+import sys
 import lain_sdk.mydocker as docker
 from lain_sdk.util import error, warn, info
 from argh.decorators import arg
@@ -30,10 +31,12 @@ def sync(src_phase, dst_phase, appname, meta_version):
     dst_phase_release_tag = docker.gen_image_name(
         appname, 'release', meta_version, dst_registry)
 
-    if transfer_to(src_phase_meta_tag, dst_phase_meta_tag) != 0:
-        return
-    if transfer_to(src_phase_release_tag, dst_phase_release_tag) != 0:
-        return
+    return_code = transfer_to(src_phase_meta_tag, dst_phase_meta_tag)
+    if return_code != 0:
+        sys.exit(return_code)
+    return_code = transfer_to(src_phase_release_tag, dst_phase_release_tag)
+    if return_code != 0:
+        sys.exit(return_code)
 
     access_token = SSOAccess.get_token(dst_phase)
     auth_header = get_auth_header(access_token)
