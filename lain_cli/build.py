@@ -19,7 +19,7 @@ def build(push=False, release=False):
     validate_only_warning()
     yml = lain_yaml()
     meta_version = yml.repo_meta_version()
-    use_prepare = docker.exist(yml.img_names['prepare'])
+    use_prepare = yml.build.prepare is not None
     use_build = release and docker.exist(yml.img_names['build'])
     release_suc, release_name = yml.build_release(use_prepare, use_build)
     (meta_suc, meta_name) = (False, '') if not release_suc else yml.build_meta()
