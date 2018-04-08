@@ -1,0 +1,25 @@
+appname: {{ appname }}
+
+build:
+  base: golang:1.9  # Or ${private_registry}/library/golang:1.9
+  prepare:
+    version: 201801081549  # Please increase ${version} to update prepare image
+    script:
+      - go get -u github.com/golang/dep/cmd/dep  # Or any other package manager for golang
+      - mkdir -p $GOPATH/src/{{ package_path }}/{{ appname }}
+      - cp -rf . $GOPATH/src/{{ package_path }}/{{ appname }}  # Copy code to $GOPATH/src
+      - cd $GOPATH/src/{{ package_path }}/{{ appname }} && dep ensure  # Install dependencies by dep
+  script:
+    - cp -rf . $GOPATH/src/{{ package_path }}
+    - go install {{ package_path }}/{{ appname }}
+
+release:
+  dest_base: laincloud/debian:stretch  # Stdout/Stderr will be redirected to /lain/logs/default/currenct
+  copy:
+    - src: $GOPATH/bin/{{ appname }}
+      dest: /lain/app/{{ appname }}
+
+web:
+  cmd: /lain/app/{{ appname }}  # Please use absolute path
+  healthcheck: /ping
+

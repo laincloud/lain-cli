@@ -40,6 +40,8 @@ from lain_cli.secret import SecretCommands
 from lain_cli.backup import BackupCommands
 from lain_cli.maintainer import MaintainerCommands
 
+from lain_cli.new import new
+
 from lain_cli.utils import exit_gracefully
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -49,7 +51,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 one_level_commands = [
     appversion, attach, build, check, clear, dashboard, debug,
-    deploy, enter, login, logout, meta, prepare, prepare_update,
+    deploy, enter, login, logout, meta, new, prepare, prepare_update,
     ps, push, refresh, reposit, rm, rmi, run, sync,
     scale, stop, tag, test, undeploy, update, validate, version
 ]
