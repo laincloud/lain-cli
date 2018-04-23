@@ -18,6 +18,17 @@ def build(push=False, release=False):
     info("Building meta and release images ...")
     validate_only_warning()
     yml = lain_yaml()
+
+    meta_name = docker.gen_image_name(yml.appname, 'meta')
+    release_name = docker.gen_image_name(yml.appname, 'release')
+
+    tag_meta_name = yml.tag_meta_version(meta_name)
+    tag_release_name = yml.tag_meta_version(release_name)
+
+    if docker.pull(tag_meta_name) == 0  and docker.pull(tag_release_name) == 0:
+        info("Done lain build.")
+        sys.exit(0)
+
     meta_version = yml.repo_meta_version()
     use_prepare = yml.build.prepare is not None
     use_build = release and docker.exist(yml.img_names['build'])
